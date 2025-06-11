@@ -1,0 +1,60 @@
+name: srl-evpn-esi
+
+topology:
+  kinds:
+    nokia_srlinux:
+      image: ghcr.io/nokia/srlinux:25.3.1
+    linux:
+      image: ghcr.io/hellt/network-multitool
+
+  nodes:
+    spine1:
+      kind: nokia_srlinux
+      type: ixrd2
+      startup-config: config-srl-evpn-esi/fabric/spine1.cfg
+      ports:
+        - "1201:22"
+    spine2:
+      kind: nokia_srlinux
+      startup-config: config-srl-evpn-esi/fabric/spine2.cfg
+      type: ixrd2
+      ports:
+        - "1202:22"
+    leaf1:
+      kind: nokia_srlinux
+      type: ixrd2
+      startup-config: config-srl-evpn-esi/fabric/leaf1.cfg
+      ports:
+        - "1211:22"
+    leaf2:
+      kind: nokia_srlinux
+      type: ixrd2
+      startup-config: config-srl-evpn-esi/fabric/leaf2.cfg
+      ports:
+        - "1212:22"
+    leaf3:
+      kind: nokia_srlinux
+      type: ixrd2
+      startup-config: config-srl-evpn-esi/fabric/leaf3.cfg
+      ports:
+        - "1213:22"
+    srv1:
+      kind: linux
+      ports:
+        - "1221:22"
+    srv2:
+      kind: linux
+      ports:
+        - "1222:22"
+
+  links:
+    - endpoints: ["leaf1:e1-49", "spine1:e1-1"]
+    - endpoints: ["leaf1:e1-50", "spine2:e1-1"]
+    - endpoints: ["leaf2:e1-49", "spine1:e1-2"]
+    - endpoints: ["leaf2:e1-50", "spine2:e1-2"]
+    - endpoints: ["leaf3:e1-49", "spine1:e1-3"]
+    - endpoints: ["leaf3:e1-50", "spine2:e1-3"]
+    - endpoints: ["srv1:eth1", "leaf1:e1-1"]
+    - endpoints: ["srv1:eth2", "leaf2:e1-1"]
+    - endpoints: ["srv2:eth1", "leaf3:e1-1"]
+    - endpoints: ["srv2:eth2", "leaf3:e1-2"]
